@@ -21,8 +21,8 @@ function connect() {
                 component: e.getAttribute("live-component")
             });
 
-            e.querySelectorAll("[live-click]").forEach(clicker => {
-                clicker.addEventListener("click", function () {
+            e.querySelectorAll("[live-click]").forEach((clicker:any) => {
+                clicker.onclick = function() {
                     send({
                         event: "event",
                         type: "click",
@@ -30,20 +30,22 @@ function connect() {
                         id: e.getAttribute("live-id"),
                         component: e.getAttribute("live-component")
                     });
-                });
+                }
             })
-            e.querySelectorAll("[live-bind]").forEach(binder => {
-                binder.addEventListener("input", function (event) {
+
+            e.querySelectorAll("[live-input]").forEach((input:any) => {
+                input.oninput = function () {
                     console.log((event.target as any).value);
                     send({
                         event: "event",
-                        type: "bind",
+                        type: "input",
                         value: (event.target as any).value,
-                        name: binder.getAttribute("live-bind"),
+                        name: input.getAttribute("live-input"),
                         id: e.getAttribute("live-id"),
                         component: e.getAttribute("live-component")
                     });
-                });
+                }
+
             })
         })
 

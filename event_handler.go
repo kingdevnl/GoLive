@@ -21,6 +21,10 @@ func _handleRegister(ws *WebSocket, data Map) {
 	}
 
 	if state.SocketID != "" {
+		ws.Send(Map{
+			"kind":   "action",
+			"action": "reload",
+		})
 		return
 	}
 	state.SocketID = ws.ID

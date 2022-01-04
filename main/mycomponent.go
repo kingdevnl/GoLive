@@ -23,7 +23,7 @@ func (c MyComponent) OnEvent(event string, name string, data GoLive.Map, state *
 		state.Set("counter", counter)
 		c.ReRender(state)
 	}
-	if event == "bind" && name == "search" {
+	if event == "input" && name == "search" {
 		str := data["value"].(string)
 		state.Set("counter", len(str))
 		state.Set("search", str)

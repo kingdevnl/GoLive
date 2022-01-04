@@ -6,5 +6,7 @@
 
     <button live-click="clicky">ClickMe!</button>
 
-    <input type="text" placeholder="search" live-bind="search" value="{{.search}}">
+
+    <p>search: {{.search}}</p>
+    <input type="text" placeholder="search" live-input="search" value="{{.search}}">
 </div>
