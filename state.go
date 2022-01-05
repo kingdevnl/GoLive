@@ -2,6 +2,7 @@ package GoLive
 
 import "time"
 
+// states List of all states
 var states = make(map[string]*State)
 
 type State struct {
@@ -23,15 +24,19 @@ type State struct {
 	Children map[string]*State
 }
 
+// Set sets a variable in the state
 func (s *State) Set(name string, value interface{}) {
 	s.LastUsed = time.Now()
 	s.data[name] = value
 }
+
+// Get gets a variable from the state
 func (s State) Get(name string) interface{} {
 	s.LastUsed = time.Now()
 	return s.data[name]
 }
 
+// NewState creates a new state and assigns it an ID and returns it
 func NewState() *State {
 	return &State{
 		ID:        GenerateID(id_len),
@@ -40,8 +45,4 @@ func NewState() *State {
 		LastUsed:  time.Now(),
 		Children:  make(map[string]*State),
 	}
-}
-
-func GetStates() map[string]*State {
-	return states
 }

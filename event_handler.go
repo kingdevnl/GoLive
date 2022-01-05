@@ -34,7 +34,7 @@ func _handleRegister(ws *WebSocket, data Map) {
 }
 
 func _handleEvent(ws *WebSocket, data Map) {
-	log.Println("handlEvent: ", data)
+	log.Println("HandleEvent: ", data)
 
 	//check if data contains event and type
 	if data["event"] == nil || data["type"] == nil || data["id"] == nil || data["component"] == nil {
@@ -68,11 +68,5 @@ func _handleEvent(ws *WebSocket, data Map) {
 		state.Set(event, data["value"])
 		component.ReRender(state)
 	}
-
-	//switch event {
-	//case "register":
-	//	_handleRegister(ws, data)
-	//	break
-	//}
 
 }

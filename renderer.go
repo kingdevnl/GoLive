@@ -98,6 +98,7 @@ func renderComponent(c IComponent, state *State) template.HTML {
 	return _toHTML(body)
 }
 
+// Live function to be called from a template to render a component.
 func Live(name string, args ...interface{}) template.HTML {
 
 	component := GetComponent(name)
@@ -114,6 +115,7 @@ func Live(name string, args ...interface{}) template.HTML {
 	return component.Render(state)
 }
 
+// LiveChild function to be called from a component to render a child.
 func LiveChild(name string, stateID string, root *State, args ...interface{}) template.HTML {
 	component := GetComponent(name)
 	if component == nil {

@@ -2,6 +2,7 @@ package GoLive
 
 import "math/rand"
 
+// id_len default length of id's
 var id_len = 28
 
 // GenerateID generates a random ID string of the given length.

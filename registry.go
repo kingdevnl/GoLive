@@ -2,6 +2,7 @@ package GoLive
 
 import "log"
 
+// components Map of all registered components.
 var components = make(map[string]IComponent)
 
 func RegisterComponent(name string, component IComponent) {
@@ -15,6 +16,7 @@ func RegisterComponent(name string, component IComponent) {
 	components[name] = component
 }
 
+// GetComponent returns a component by name.
 func GetComponent(name string) IComponent {
 	if component, ok := components[name]; ok {
 		return component

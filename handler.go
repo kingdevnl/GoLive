@@ -10,6 +10,7 @@ type Config struct {
 	Path string `json:"path"`
 }
 
+// SetupHandler adds the endpoints to the fiber app for the WebSocket
 func SetupHandler(config Config, app *fiber.App) {
 	// Handler to handle all types if it's a websocket upgrade forward the request to the websocket handler
 	app.Use(config.Path, func(ctx *fiber.Ctx) error {
@@ -31,12 +32,10 @@ func SetupHandler(config Config, app *fiber.App) {
 
 			for _, c := range components {
 				for index, e := range c.GetEvents() {
-
 					if e.State.SocketID == ws.ID {
 						log.Println("Removing event: ", e.Name)
 						c.RemoveEventHandler(index)
 					}
-
 				}
 			}
 
@@ -55,6 +54,7 @@ func SetupHandler(config Config, app *fiber.App) {
 		for {
 			var json Map
 
+			// Read message from the client.
 			if err := conn.ReadJSON(&json); err != nil {
 				if !ws.IsConnected {
 					return
@@ -62,7 +62,7 @@ func SetupHandler(config Config, app *fiber.App) {
 				log.Printf("Websocket %s read error: %s", ws.ID, err)
 				break
 			}
-
+			// Handle the message
 			_handleEvent(ws, json)
 
 		}
