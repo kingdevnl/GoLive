@@ -12,6 +12,7 @@ var Connections = make(map[string]*WebSocket)
 
 func SetupEngine(engine *html.Engine) {
 	engine.AddFunc("live", Live)
+	engine.AddFunc("live_child", LiveChild)
 	Engine = engine
 
 }

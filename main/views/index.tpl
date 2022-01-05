@@ -10,6 +10,7 @@
 <body>
 
 {{live "MyComponent" "Hello, World!"}}
+<hr>
 
 
 <script src="/golive.js">

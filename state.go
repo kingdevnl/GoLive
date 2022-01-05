@@ -18,6 +18,9 @@ type State struct {
 	// Date the state was created (Used for cleaning up states that have not been used for a while)
 	CreatedAt time.Time
 	LastUsed  time.Time
+
+	Parent   *State
+	Children map[string]*State
 }
 
 func (s *State) Set(name string, value interface{}) {
@@ -33,5 +36,6 @@ func NewState() *State {
 		data:      make(Map),
 		CreatedAt: time.Now(),
 		LastUsed:  time.Now(),
+		Children:  make(map[string]*State),
 	}
 }

@@ -42,10 +42,19 @@ func _toHTML(node *html.Node) template.HTML {
 }
 
 // renderComponent Renders the given component and returns the rendered html.
-func renderComponent(c Component, state *State) template.HTML {
+func renderComponent(c IComponent, state *State) template.HTML {
+
+	var data = map[string]interface{}{
+		"c":     c,
+		"state": state,
+	}
+
+	for k, v := range state.data {
+		data[k] = v
+	}
 
 	var bffer bytes.Buffer
-	if err := Engine.Render(&bffer, c.GetFile(), state.data); err != nil {
+	if err := Engine.Render(&bffer, c.GetFile(), data); err != nil {
 		log.Println("Error rendering template:", c.GetFile(), err)
 		return template.HTML("error rendering template " + c.GetFile())
 	}
@@ -70,4 +79,28 @@ func Live(name string, args ...interface{}) template.HTML {
 	component.OnMount(state, args)
 
 	return component.Render(state)
+}
+
+func LiveChild(name string, stateID string, root *State, args ...interface{}) template.HTML {
+	component := GetComponent(name)
+	if component == nil {
+		return template.HTML("Failed to find component: " + name)
+	}
+
+	if root == nil {
+		return template.HTML("Failed to find root state: " + stateID)
+	}
+
+	state := root.Children[stateID]
+
+	if state == nil {
+		state = NewState()
+		state.Parent = root
+		states[state.ID] = state
+		root.Children[stateID] = state
+		component.OnMount(state, args)
+	}
+
+	return component.Render(state)
+
 }

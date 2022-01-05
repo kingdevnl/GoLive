@@ -8,9 +8,30 @@ import (
 	"log"
 )
 
+type ChildComponent struct {
+	GoLive.Component
+}
+
+func (c ChildComponent) OnMount(state *GoLive.State, args []interface{}) {
+	log.Printf("ChildOnMount\n")
+	state.Set("counter", 0)
+	state.Set("message", "This is a paragraph.")
+}
+
+func (c ChildComponent) OnEvent(event string, name string, data GoLive.Map, state *GoLive.State) {
+	log.Println("ChildOnEvent:", event, name)
+	if event == "click" {
+		counter := state.Get("counter").(int)
+		counter += 1
+		state.Set("counter", counter)
+		c.ReRender(state)
+	}
+}
+
 func main() {
 
 	GoLive.RegisterComponent("MyComponent", &MyComponent{})
+	GoLive.RegisterComponent("ChildComponent", &ChildComponent{})
 
 	engine := html.New("./main/views", ".tpl")
 

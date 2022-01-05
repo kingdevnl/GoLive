@@ -29,14 +29,15 @@ type IComponent interface {
 
 // Component default component implementation.
 type Component struct {
-	file string
-	name string
+	file     string
+	name     string
+	children map[string]*State
 }
 
 func (c Component) OnMount(state *State, args []interface{}) {
 }
 
-func (c Component) Render(state *State) template.HTML {
+func (c *Component) Render(state *State) template.HTML {
 	return renderComponent(c, state)
 }
 
@@ -66,6 +67,7 @@ func (c *Component) SetFile(s string) {
 func (c Component) GetName() string {
 	return c.name
 }
+
 func (c *Component) SetName(s string) {
 	c.name = s
 }
