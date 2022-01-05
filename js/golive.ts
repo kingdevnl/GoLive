@@ -1,25 +1,10 @@
 import {getLiveComponents} from "./discovery";
 import morphdom from "morphdom";
 
+import { debounce } from "debounce";
+
+
 export let socket: WebSocket;
-
-
-function _debounce(func:any, timeout = 300){
-    console.log('aa')
-    let timer:any;
-    return (...args:any) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => { func.apply(this, args); }, timeout);
-    };
-}
-
-function debounce(func:any, target: any) {
-    let timeout = target.getAttribute("live-debouce")
-    if(!timeout) {
-        timeout = 100
-    }
-    return _debounce(func, timeout)
-}
 
 
 export function send(data: any) {
@@ -48,20 +33,21 @@ function connect() {
                         id: e.getAttribute("live-id"),
                         component: e.getAttribute("live-component")
                     })
-                }, clicker)
+                }, clicker.getAttribute("live-debounce") || 100)
             })
 
             e.querySelectorAll("[live-bind]").forEach((input: any) => {
-                input.oninput = debounce(()=> {
-                    console.log('debounce input')
+                input.oninput = debounce((event:any)=> {
+                    console.log('input', event.target.value);
                     send({
                         event: input.getAttribute("live-bind"),
                         type: "bind",
-                        value: (input as any).value,
+                        value: event.target.value,
                         id: e.getAttribute("live-id"),
                         component: e.getAttribute("live-component")
                     })
-                }, input)
+                }, input.getAttribute("live-debounce") || 200)
+
             })
         })
 
@@ -89,7 +75,6 @@ function connect() {
             morphdom(document.querySelector('[live-id="' + data.id + '"]'), html);
         }
 
-        console.log(data)
     };
 }
 

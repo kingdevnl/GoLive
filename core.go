@@ -46,3 +46,9 @@ func SetupGarbageCollector() {
 		}
 	}()
 }
+
+func InitComponents() {
+	for _, component := range components {
+		component.OnInit()
+	}
+}

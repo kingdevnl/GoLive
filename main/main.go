@@ -58,7 +58,9 @@ func main() {
 
 	GoLive.SetupHandler(GoLive.Config{Path: "/ws"}, app)
 
-	GoLive.SetupGarbageCollector()
+	//GoLive.SetupGarbageCollector()
+
+	GoLive.InitComponents()
 
 	log.Fatal(app.Listen(":3000"))
 }

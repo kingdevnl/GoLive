@@ -12,6 +12,7 @@ type MyComponent struct {
 func (c *MyComponent) OnMount(state *GoLive.State, args []interface{}) {
 	log.Printf("OnMount\n")
 	state.Set("counter", 0)
+
 	state.Set("message", "This is a paragraph.")
 
 	state.Set("search", "john@doe.com")
@@ -21,7 +22,9 @@ func (c *MyComponent) OnMount(state *GoLive.State, args []interface{}) {
 
 	c.On(state, "inc", func(s *GoLive.State, data GoLive.Map) {
 		log.Println("on inc")
+
 		s.Set("counter", s.Get("counter").(int)+1)
+
 		c.ReRender(s)
 	})
 }

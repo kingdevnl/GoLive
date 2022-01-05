@@ -15,6 +15,8 @@ type EventHandler struct {
 
 // IComponent Interface
 type IComponent interface {
+	OnInit()
+
 	// OnMount is called the first time the component is rendered.
 	OnMount(state *State, args []interface{})
 	// Render returns the rendered component.
@@ -48,6 +50,8 @@ type Component struct {
 	methods map[string]EventMethod
 	events  []EventHandler
 }
+
+func (c Component) OnInit() {}
 
 func (c Component) OnMount(state *State, args []interface{}) {
 }

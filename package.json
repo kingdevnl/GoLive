@@ -10,9 +10,11 @@
     "build": "webpack --mode production"
   },
   "dependencies": {
+    "debounce": "^1.2.1",
     "morphdom": "^2.6.1"
   },
   "devDependencies": {
+    "@types/debounce": "^1.2.1",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.4",
     "webpack": "^5.65.0",
