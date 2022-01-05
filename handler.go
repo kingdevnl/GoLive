@@ -29,6 +29,14 @@ func SetupHandler(config Config, app *fiber.App) {
 			log.Printf("WebSocket %s disconnected.\n", ws.ID)
 			ws.IsConnected = false
 
+			// loop over all states
+			for _id, state := range states {
+				if state.SocketID == ws.ID {
+					log.Println("Removing state:", _id)
+					delete(states, _id)
+				}
+			}
+
 			delete(Connections, ws.ID)
 			return nil
 		})

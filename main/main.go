@@ -13,7 +13,6 @@ type ChildComponent struct {
 }
 
 func (c ChildComponent) OnMount(state *GoLive.State, args []interface{}) {
-	log.Printf("ChildOnMount\n")
 	state.Set("counter", 0)
 	state.Set("message", "This is a paragraph.")
 }
@@ -58,6 +57,8 @@ func main() {
 	})
 
 	GoLive.SetupHandler(GoLive.Config{Path: "/ws"}, app)
+
+	GoLive.SetupGarbageCollector()
 
 	log.Fatal(app.Listen(":3000"))
 }
