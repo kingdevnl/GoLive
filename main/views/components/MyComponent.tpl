@@ -11,7 +11,7 @@
 
 
     <p>search: {{.search}}</p>
-    <input type="text" placeholder="search" live-bind="search">
+    <input type="text" placeholder="search" live-bind="search" live-debouce="100">
 
 
 

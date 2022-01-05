@@ -4,6 +4,24 @@ import morphdom from "morphdom";
 export let socket: WebSocket;
 
 
+function _debounce(func:any, timeout = 300){
+    console.log('aa')
+    let timer:any;
+    return (...args:any) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+}
+
+function debounce(func:any, target: any) {
+    let timeout = target.getAttribute("live-debouce")
+    if(!timeout) {
+        timeout = 100
+    }
+    return _debounce(func, timeout)
+}
+
+
 export function send(data: any) {
     socket.send(JSON.stringify(data));
 }
@@ -23,36 +41,27 @@ function connect() {
             });
 
             e.querySelectorAll("[live-click]").forEach((clicker: any) => {
-                clicker.onclick = function () {
+                clicker.onclick = debounce(()=> {
                     send({
                         event: clicker.getAttribute("live-click"),
                         type: "click",
                         id: e.getAttribute("live-id"),
                         component: e.getAttribute("live-component")
                     })
-                }
+                }, clicker)
             })
 
             e.querySelectorAll("[live-bind]").forEach((input: any) => {
-                input.oninput = function () {
-                    console.log((event.target as any).value);
+                input.oninput = debounce(()=> {
+                    console.log('debounce input')
                     send({
                         event: input.getAttribute("live-bind"),
                         type: "bind",
-                        value: (event.target as any).value,
+                        value: (input as any).value,
                         id: e.getAttribute("live-id"),
                         component: e.getAttribute("live-component")
                     })
-                    // send({
-                    //     event: "event",
-                    //     type: "input",
-                    //     value: (event.target as any).value,
-                    //     name: input.getAttribute("live-input"),
-                    //     id: e.getAttribute("live-id"),
-                    //     component: e.getAttribute("live-component")
-                    // });
-                }
-
+                }, input)
             })
         })
 
