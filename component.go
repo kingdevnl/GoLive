@@ -5,7 +5,13 @@ import (
 	"log"
 )
 
-type Method func(state *State, data Map)
+type EventMethod func(state *State, data Map)
+
+type EventHandler struct {
+	Name  string
+	Func  EventMethod
+	State *State
+}
 
 // IComponent Interface
 type IComponent interface {
@@ -25,15 +31,22 @@ type IComponent interface {
 	GetName() string
 	SetName(name string)
 
-	Register(name string, method Method)
-	GetMethod(name string) Method
+	Register(name string, method EventMethod)
+	GetMethod(name string) EventMethod
+
+	On(state *State, name string, method EventMethod)
+	Emit(name string, data Map)
+
+	GetEvents() []EventHandler
+	RemoveEventHandler(index int)
 }
 
 // Component default component implementation.
 type Component struct {
 	file    string
 	name    string
-	methods map[string]Method
+	methods map[string]EventMethod
+	events  []EventHandler
 }
 
 func (c Component) OnMount(state *State, args []interface{}) {
@@ -71,19 +84,48 @@ func (c *Component) SetName(s string) {
 	c.name = s
 }
 
-func (c *Component) Register(name string, method Method) {
+func (c *Component) Register(name string, method EventMethod) {
 	if c.methods == nil {
-		c.methods = make(map[string]Method)
+		c.methods = make(map[string]EventMethod)
 	}
 	c.methods[name] = method
 }
 
-func (c Component) GetMethod(name string) Method {
+func (c Component) GetMethod(name string) EventMethod {
 	if c.methods == nil {
-		c.methods = make(map[string]Method)
+		c.methods = make(map[string]EventMethod)
 	}
 	if method, ok := c.methods[name]; ok {
 		return method
 	}
 	return nil
+}
+
+func (c *Component) On(state *State, name string, method EventMethod) {
+	if c.events == nil {
+		c.events = make([]EventHandler, 0)
+	}
+	c.events = append(c.events, EventHandler{
+		Name:  name,
+		Func:  method,
+		State: state,
+	})
+}
+
+func (c *Component) Emit(name string, data Map) {
+	if c.events == nil {
+		c.events = make([]EventHandler, 0)
+	}
+	for _, event := range c.events {
+		if event.Name == name {
+			event.Func(event.State, data)
+		}
+	}
+}
+
+func (c *Component) GetEvents() []EventHandler {
+	return c.events
+}
+func (c *Component) RemoveEventHandler(index int) {
+	c.events = append(c.events[:index], c.events[index+1:]...)
 }

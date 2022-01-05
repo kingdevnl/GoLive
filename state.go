@@ -41,3 +41,7 @@ func NewState() *State {
 		Children:  make(map[string]*State),
 	}
 }
+
+func GetStates() map[string]*State {
+	return states
+}

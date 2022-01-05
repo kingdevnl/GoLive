@@ -18,13 +18,21 @@ func (c *MyComponent) OnMount(state *GoLive.State, args []interface{}) {
 
 	c.Register("clicky", c.clicky)
 	c.Register("test", c.test)
+
+	c.On(state, "inc", func(s *GoLive.State, data GoLive.Map) {
+		log.Println("on inc")
+		s.Set("counter", s.Get("counter").(int)+1)
+		c.ReRender(s)
+	})
 }
 
 func (c *MyComponent) clicky(state *GoLive.State, data GoLive.Map) {
 	log.Printf("clicky\n")
-	state.Set("counter", state.Get("counter").(int)+1)
-	c.ReRender(state)
+
+	c.Emit("inc", nil)
+
 }
+
 func (c *MyComponent) test(state *GoLive.State, data GoLive.Map) {
 	state.Set("search", "this is a test")
 	c.ReRender(state)
