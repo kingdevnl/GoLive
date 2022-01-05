@@ -2,6 +2,8 @@ package GoLive
 
 import (
 	"github.com/gofiber/template/html"
+	"log"
+	"time"
 )
 
 type Map map[string]interface{}
@@ -18,4 +20,29 @@ func SetupEngine(engine *html.Engine) {
 
 func SetupGarbageCollector() {
 
+	go func() {
+
+		for {
+
+			// loop over all states
+			for id, state := range states {
+				// check if the socket id is not set and the state is older than 5 minutes
+				if state.SocketID == "" && time.Now().Sub(state.CreatedAt) > time.Minute*5 {
+					log.Println("SetupGarbageCollector: Removing state: " + id)
+					delete(states, id)
+					continue
+				}
+
+				//// check if the state lastUse is older than 1 hour
+				//if time.Now().Sub(state.LastUsed) > time.Hour {
+				//	log.Println("SetupGarbageCollector: Removing state: " + id)
+				//	delete(states, id)
+				//	continue
+				//}
+
+			}
+			time.Sleep(10 * time.Second)
+
+		}
+	}()
 }

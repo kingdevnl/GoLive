@@ -24,9 +24,11 @@ type State struct {
 }
 
 func (s *State) Set(name string, value interface{}) {
+	s.LastUsed = time.Now()
 	s.data[name] = value
 }
 func (s State) Get(name string) interface{} {
+	s.LastUsed = time.Now()
 	return s.data[name]
 }
 

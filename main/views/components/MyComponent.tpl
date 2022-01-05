@@ -14,5 +14,5 @@
 
 
 
-    {{live_child "ChildComponent"  "test1" .state }}
+{{/*    {{live_child "ChildComponent"  "test1" .state }}*/}}
 </div>
