@@ -7,10 +7,11 @@
     <p>c:{{.counter}}</p>
 
     <button live-click="clicky">ClickMe!</button>
+    <button live-click="test">ClickMe!</button>
 
 
     <p>search: {{.search}}</p>
-    <input type="text" placeholder="search" live-input="search" value="{{.search}}">
+    <input type="text" placeholder="search" live-bind="search">
 
 
 

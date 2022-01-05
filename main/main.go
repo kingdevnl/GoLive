@@ -17,15 +17,15 @@ func (c ChildComponent) OnMount(state *GoLive.State, args []interface{}) {
 	state.Set("message", "This is a paragraph.")
 }
 
-func (c ChildComponent) OnEvent(event string, name string, data GoLive.Map, state *GoLive.State) {
-	log.Println("ChildOnEvent:", event, name)
-	if event == "click" {
-		counter := state.Get("counter").(int)
-		counter += 1
-		state.Set("counter", counter)
-		c.ReRender(state)
-	}
-}
+//func (c ChildComponent) OnEvent(event string, name string, data GoLive.Map, state *GoLive.State) {
+//	log.Println("ChildOnEvent:", event, name)
+//	if event == "click" {
+//		counter := state.Get("counter").(int)
+//		counter += 1
+//		state.Set("counter", counter)
+//		c.ReRender(state)
+//	}
+//}
 
 func main() {
 

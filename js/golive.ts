@@ -17,41 +17,45 @@ function connect() {
         getLiveComponents().forEach(e => {
             send({
                 event: "register",
+                type: "register",
                 id: e.getAttribute("live-id"),
                 component: e.getAttribute("live-component")
             });
 
-            e.querySelectorAll("[live-click]").forEach((clicker:any) => {
-                clicker.onclick = function() {
+            e.querySelectorAll("[live-click]").forEach((clicker: any) => {
+                clicker.onclick = function () {
                     send({
-                        event: "event",
+                        event: clicker.getAttribute("live-click"),
                         type: "click",
-                        name: clicker.getAttribute("live-click"),
                         id: e.getAttribute("live-id"),
                         component: e.getAttribute("live-component")
-                    });
+                    })
                 }
             })
 
-            e.querySelectorAll("[live-input]").forEach((input:any) => {
+            e.querySelectorAll("[live-bind]").forEach((input: any) => {
                 input.oninput = function () {
                     console.log((event.target as any).value);
                     send({
-                        event: "event",
-                        type: "input",
+                        event: input.getAttribute("live-bind"),
+                        type: "bind",
                         value: (event.target as any).value,
-                        name: input.getAttribute("live-input"),
                         id: e.getAttribute("live-id"),
                         component: e.getAttribute("live-component")
-                    });
+                    })
+                    // send({
+                    //     event: "event",
+                    //     type: "input",
+                    //     value: (event.target as any).value,
+                    //     name: input.getAttribute("live-input"),
+                    //     id: e.getAttribute("live-id"),
+                    //     component: e.getAttribute("live-component")
+                    // });
                 }
 
             })
         })
 
-        send({
-            event: "join",
-        })
     };
     socket.onclose = function (event) {
         console.log("Disconnected from server, trying to reconnect");

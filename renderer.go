@@ -41,6 +41,20 @@ func _toHTML(node *html.Node) template.HTML {
 	return template.HTML(b.String())
 }
 
+func _getChildren(node *html.Node) []*html.Node {
+	var children []*html.Node
+
+	var f func(*html.Node)
+	f = func(node *html.Node) {
+		children = append(children, node)
+		for child := node.FirstChild; child != nil; child = child.NextSibling {
+			f(child)
+		}
+	}
+	f(node)
+	return children
+}
+
 // renderComponent Renders the given component and returns the rendered html.
 func renderComponent(c IComponent, state *State) template.HTML {
 
@@ -62,6 +76,25 @@ func renderComponent(c IComponent, state *State) template.HTML {
 	body := _parse(bffer.String())
 	body.FirstChild.Attr = append(body.FirstChild.Attr, html.Attribute{Key: "live-id", Val: state.ID})
 	body.FirstChild.Attr = append(body.FirstChild.Attr, html.Attribute{Key: "live-component", Val: c.GetName()})
+
+	children := _getChildren(body)
+	// loop through all children and check if they have the live-bind attribute
+
+	for _, node := range children {
+		if node.Type == html.ElementNode {
+			for _, attr := range node.Attr {
+				if attr.Key == "live-bind" {
+					value := state.data[attr.Val]
+					if value == nil {
+						value = ""
+					}
+					node.Attr = append(node.Attr, html.Attribute{Key: "value", Val: value.(string)})
+				}
+			}
+
+		}
+	}
+
 	return _toHTML(body)
 }
 

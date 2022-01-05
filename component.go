@@ -5,6 +5,8 @@ import (
 	"log"
 )
 
+type Method func(state *State, data Map)
+
 // IComponent Interface
 type IComponent interface {
 	// OnMount is called the first time the component is rendered.
@@ -15,9 +17,6 @@ type IComponent interface {
 	// ReRender renders the component again. and sends it to the client
 	ReRender(state *State)
 
-	// OnEvent Called when the client emits an event.
-	OnEvent(event string, name string, data Map, state *State)
-
 	// GetFile returns the file name of the component.
 	GetFile() string
 	// SetFile sets the file name of the component.
@@ -25,13 +24,16 @@ type IComponent interface {
 
 	GetName() string
 	SetName(name string)
+
+	Register(name string, method Method)
+	GetMethod(name string) Method
 }
 
 // Component default component implementation.
 type Component struct {
-	file     string
-	name     string
-	children map[string]*State
+	file    string
+	name    string
+	methods map[string]Method
 }
 
 func (c Component) OnMount(state *State, args []interface{}) {
@@ -53,9 +55,6 @@ func (c Component) ReRender(state *State) {
 		})
 	}
 }
-func (c Component) OnEvent(event string, name string, data Map, state *State) {
-
-}
 
 func (c Component) GetFile() string {
 	return c.file
@@ -70,4 +69,21 @@ func (c Component) GetName() string {
 
 func (c *Component) SetName(s string) {
 	c.name = s
+}
+
+func (c *Component) Register(name string, method Method) {
+	if c.methods == nil {
+		c.methods = make(map[string]Method)
+	}
+	c.methods[name] = method
+}
+
+func (c Component) GetMethod(name string) Method {
+	if c.methods == nil {
+		c.methods = make(map[string]Method)
+	}
+	if method, ok := c.methods[name]; ok {
+		return method
+	}
+	return nil
 }

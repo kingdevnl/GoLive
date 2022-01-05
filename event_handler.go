@@ -30,38 +30,49 @@ func _handleRegister(ws *WebSocket, data Map) {
 	state.SocketID = ws.ID
 	state.Component = GetComponent(componentName)
 
-}
-
-func handleRegularEvent(ws *WebSocket, data Map) {
-
-	componentId := data["id"].(string)
-	componentName := data["component"].(string)
-	state := states[componentId]
-	component := GetComponent(componentName)
-
-	if component == nil {
-		log.Println("Component not found: " + componentName)
-		return
-	}
-	if state == nil {
-		return
-	}
-
-	component.OnEvent(data["type"].(string), data["name"].(string), data, state)
-
+	log.Println("Registered component:", componentName)
 }
 
 func _handleEvent(ws *WebSocket, data Map) {
-	event := data["event"]
-	log.Println("EVENT: " + event.(string))
-	switch event {
-	case "register":
-		_handleRegister(ws, data)
-		break
+	log.Println("handlEvent: ", data)
 
-	case "event":
-		handleRegularEvent(ws, data)
-		break
+	//check if data contains event and type
+	if data["event"] == nil || data["type"] == nil || data["id"] == nil || data["component"] == nil {
+		return
 	}
+
+	event := data["event"].(string)
+	eventType := data["type"].(string)
+
+	componentId := data["id"].(string)
+	componentName := data["component"].(string)
+
+	component := GetComponent(componentName)
+	state := states[componentId]
+
+	if event == "register" {
+		_handleRegister(ws, data)
+		return
+	}
+
+	switch eventType {
+	case "click":
+		method := component.GetMethod(event)
+		if method == nil {
+			log.Println("Component method not found:", componentName, "#", event)
+			return
+		}
+		method(state, data)
+		return
+	case "bind":
+		state.Set(event, data["value"])
+		component.ReRender(state)
+	}
+
+	//switch event {
+	//case "register":
+	//	_handleRegister(ws, data)
+	//	break
+	//}
 
 }
