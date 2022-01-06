@@ -56,7 +56,7 @@ func main() {
 		return ctx.Render("index", nil)
 	})
 
-	GoLive.SetupHandler(GoLive.Config{Path: "/ws"}, app)
+	GoLive.SetupHandler(GoLive.Config{Path: "/ws"}, app, func(c *fiber.Ctx) {})
 
 	GoLive.SetupGarbageCollector()
 

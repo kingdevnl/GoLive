@@ -10,12 +10,16 @@ type Config struct {
 	Path string `json:"path"`
 }
 
+type middleware func(c *fiber.Ctx)
+
 // SetupHandler adds the endpoints to the fiber app for the WebSocket
-func SetupHandler(config Config, app *fiber.App) {
+func SetupHandler(config Config, app *fiber.App, upgradeMiddleware middleware) {
 	// Handler to handle all types if it's a websocket upgrade forward the request to the websocket handler
 	app.Use(config.Path, func(ctx *fiber.Ctx) error {
 		if websocket.IsWebSocketUpgrade(ctx) {
-			ctx.Locals("ctx", ctx)
+			if upgradeMiddleware != nil {
+				upgradeMiddleware(ctx)
+			}
 			return ctx.Next()
 		}
 		return fiber.ErrUpgradeRequired
