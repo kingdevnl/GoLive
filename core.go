@@ -48,3 +48,41 @@ func InitComponents() {
 		component.OnInit()
 	}
 }
+
+// EmitEvent emits an event to all components.
+func EmitEvent(name string, data Map) {
+	for _, c := range components {
+		c.Emit(name, data)
+	}
+}
+
+// EmitEventTo emits an event to a specific component.
+func EmitEventTo(componentName string, name string, data Map) {
+	for _, c := range components {
+		if c.GetName() == componentName {
+			c.Emit(name, data)
+		}
+	}
+}
+
+// BroadcastEvent emits an event to all connections.
+func BroadcastEvent(name string, data Map) {
+	for _, c := range Connections {
+		c.Send(Map{
+			"event": name,
+			"data":  data,
+		})
+	}
+}
+
+// BroadcastEventTo emits an event to a specific connection.
+func BroadcastEventTo(SocketID string, name string, data Map) {
+	for _, c := range Connections {
+		if c.ID == SocketID && c.IsConnected {
+			c.Send(Map{
+				"event": name,
+				"data":  data,
+			})
+		}
+	}
+}
