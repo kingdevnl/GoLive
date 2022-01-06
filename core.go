@@ -86,3 +86,20 @@ func BroadcastEventTo(SocketID string, name string, data Map) {
 		}
 	}
 }
+
+func GetWebsocket(id string) *WebSocket {
+	for _, c := range Connections {
+		if c.ID == id {
+			return c
+		}
+	}
+	return nil
+}
+func GetWebsocketByState(state *State) *WebSocket {
+	for _, c := range Connections {
+		if c.ID == state.SocketID {
+			return c
+		}
+	}
+	return nil
+}
